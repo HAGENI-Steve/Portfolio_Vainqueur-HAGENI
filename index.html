@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HAGENIMANA Vainqueur | Cartographe & Géomaticien SIG</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:      #0d1117;
+      --surface: #161b22;
+      --border:  #21262d;
+      --accent:  #3fb950;
+      --accent2: #58a6ff;
+      --gold:    #d4a843;
+      --text:    #e6edf3;
+      --muted:   #8b949e;
+      --card:    #1c2128;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.7; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(13,17,23,.9); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 6vw; height: 64px;
+    }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; color: var(--text); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: .82rem; font-weight: 400; letter-spacing: .04em; text-transform: uppercase; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    #hero { min-height: 100vh; display: flex; align-items: center; padding: 120px 6vw 80px; position: relative; overflow: hidden; }
+    .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(63,185,80,.04) 1px,transparent 1px), linear-gradient(90deg,rgba(63,185,80,.04) 1px,transparent 1px); background-size: 48px 48px; }
+    .hero-glow { position: absolute; top: -20%; left: 55%; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle,rgba(63,185,80,.08) 0%,transparent 70%); pointer-events: none; }
+    .hero-content { position: relative; max-width: 720px; }
+    .hero-tag { display: inline-flex; align-items: center; gap: .5rem; background: rgba(63,185,80,.1); border: 1px solid rgba(63,185,80,.25); color: var(--accent); padding: .35rem 1rem; border-radius: 2rem; font-size: .78rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2rem; animation: fadeUp .6s ease both; }
+    .hero-tag::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem,5vw,3.8rem); font-weight: 700; line-height: 1.15; animation: fadeUp .7s .1s ease both; }
+    h1 em { font-style: normal; color: var(--accent); }
+    .hero-sub { font-size: 1rem; color: var(--muted); margin: 1.5rem 0 2.5rem; animation: fadeUp .7s .2s ease both; }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+    .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp .7s .3s ease both; }
+    .btn { padding: .72rem 1.8rem; border-radius: .4rem; font-size: .9rem; font-weight: 500; cursor: pointer; text-decoration: none; transition: all .2s; display: inline-flex; align-items: center; gap: .5rem; }
+    .btn-primary { background: var(--accent); color: #0d1117; border: none; }
+    .btn-primary:hover { background: #56d364; transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: var(--muted); background: var(--surface); }
+    .hero-stats { display: flex; gap: 3rem; margin-top: 4rem; animation: fadeUp .7s .4s ease both; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; }
+    .stat-label { font-size: .74rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+
+    /* SECTIONS */
+    section { padding: 100px 6vw; }
+    .section-label { display: flex; align-items: center; gap: 1rem; margin-bottom: 3.5rem; }
+    .section-label::before { content:''; display:block; width:32px; height:2px; background:var(--accent); }
+    .section-label h2 { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:600; }
+    .section-label span { margin-left:auto; font-size:.74rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+
+    /* ABOUT */
+    #about { background: var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:start; }
+    .about-text p { color:var(--muted); margin-bottom:1.2rem; }
+    .about-text p strong { color:var(--text); font-weight:500; }
+    .about-tags { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:2rem; }
+    .tag { background:var(--card); border:1px solid var(--border); padding:.3rem .85rem; border-radius:.25rem; font-size:.78rem; color:var(--muted); }
+    .about-tools h3 { font-size:.74rem; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:1.2rem; }
+    .tool-list { display:flex; flex-direction:column; gap:.8rem; }
+    .tool-item { display:flex; align-items:center; }
+    .tool-name { font-size:.85rem; color:var(--text); width:190px; flex-shrink:0; }
+    .tool-bar { flex:1; height:3px; background:var(--border); margin:0 1rem; border-radius:2px; overflow:hidden; }
+    .tool-fill { height:100%; background:var(--accent); border-radius:2px; }
+    .tool-pct { font-size:.74rem; color:var(--muted); width:32px; text-align:right; }
+
+    /* PARCOURS */
+    #parcours { background: var(--bg); }
+    .parcours-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; }
+    .parcours-col-title { font-size:.74rem; color:var(--accent); text-transform:uppercase; letter-spacing:.1em; margin-bottom:2rem; display:flex; align-items:center; gap:.6rem; }
+    .parcours-col-title::after { content:''; flex:1; height:1px; background:var(--border); }
+    .timeline { position:relative; padding-left:1.5rem; }
+    .timeline::before { content:''; position:absolute; left:0; top:6px; bottom:0; width:1px; background:var(--border); }
+    .tl-item { position:relative; padding-bottom:2rem; }
+    .tl-item:last-child { padding-bottom:0; }
+    .tl-dot { position:absolute; left:-1.88rem; top:5px; width:12px; height:12px; border-radius:50%; background:var(--accent); border:2px solid var(--bg); }
+    .tl-dot.gold { background:var(--gold); }
+    .tl-period { font-size:.72rem; color:var(--accent); font-weight:500; letter-spacing:.04em; margin-bottom:.25rem; }
+    .tl-period.gold-text { color:var(--gold); }
+    .tl-title { font-size:.93rem; font-weight:500; color:var(--text); margin-bottom:.2rem; }
+    .tl-org { font-size:.82rem; color:var(--accent2); margin-bottom:.4rem; }
+    .tl-desc { font-size:.81rem; color:var(--muted); line-height:1.6; }
+    .cert-section-title { font-size:.74rem; color:var(--accent); text-transform:uppercase; letter-spacing:.1em; margin:2.5rem 0 1.2rem; display:flex; align-items:center; gap:.6rem; }
+    .cert-section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+    .cert-list { display:flex; flex-direction:column; gap:.9rem; }
+    .cert-card { background:var(--card); border:1px solid var(--border); border-radius:.4rem; padding:1.1rem 1.4rem; display:flex; align-items:center; gap:1.1rem; transition:border-color .2s; }
+    .cert-card:hover { border-color:rgba(212,168,67,.4); }
+    .cert-icon { font-size:1.5rem; flex-shrink:0; }
+    .cert-info strong { display:block; font-size:.88rem; font-weight:500; }
+    .cert-info span { font-size:.76rem; color:var(--muted); }
+    .cert-badge { margin-left:auto; background:rgba(212,168,67,.1); border:1px solid rgba(212,168,67,.3); color:var(--gold); font-size:.68rem; padding:.2rem .55rem; border-radius:2rem; white-space:nowrap; flex-shrink:0; }
+    .cv-download { margin-top:2.5rem; background:var(--card); border:1px solid var(--border); border-radius:.5rem; padding:1.5rem 2rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+    .cv-download p { font-size:.85rem; color:var(--muted); margin-top:.25rem; }
+    .cv-download strong { display:block; font-size:.98rem; color:var(--text); }
+
+    /* SKILLS */
+    #skills { background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .skills-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem; }
+    .skill-card { background:var(--card); border:1px solid var(--border); border-radius:.5rem; padding:2rem; transition:border-color .2s,transform .2s; }
+    .skill-card:hover { border-color:rgba(63,185,80,.4); transform:translateY(-3px); }
+    .skill-icon { width:44px; height:44px; border-radius:.4rem; background:rgba(63,185,80,.1); display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-bottom:1.2rem; }
+    .skill-card h3 { font-size:1rem; font-weight:500; margin-bottom:.6rem; }
+    .skill-card p { font-size:.82rem; color:var(--muted); line-height:1.6; }
+    .skill-tags { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:1rem; }
+    .skill-tag { background:rgba(88,166,255,.08); border:1px solid rgba(88,166,255,.2); color:var(--accent2); padding:.2rem .6rem; border-radius:.25rem; font-size:.72rem; }
+
+    /* PROJECTS */
+    #projects { background:var(--bg); }
+    .projects-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.5rem; }
+    .project-card { background:var(--card); border:1px solid var(--border); border-radius:.5rem; overflow:hidden; transition:border-color .2s,transform .2s; cursor:pointer; }
+    .project-card:hover { border-color:rgba(63,185,80,.4); transform:translateY(-3px); }
+    .project-thumb { height:148px; display:flex; align-items:center; justify-content:center; font-size:3rem; }
+    .p-map    { background:linear-gradient(135deg,#0d2b1d,#0d3a2a); }
+    .p-drone  { background:linear-gradient(135deg,#0d1f3c,#0a2951); }
+    .p-data   { background:linear-gradient(135deg,#1a1a0d,#2a2a0a); }
+    .p-urban  { background:linear-gradient(135deg,#1a0d1a,#2a0a2a); }
+    .p-remote { background:linear-gradient(135deg,#0d1a1a,#0a2a2a); }
+    .p-photo  { background:linear-gradient(135deg,#1a0d0d,#2a0a0a); }
+    .p-sig    { background:linear-gradient(135deg,#0d1a2a,#0a2040); }
+    .project-info { padding:1.3rem; }
+    .project-cat { font-size:.7rem; color:var(--accent); text-transform:uppercase; letter-spacing:.08em; margin-bottom:.4rem; }
+    .project-info h3 { font-size:.93rem; font-weight:500; margin-bottom:.4rem; }
+    .project-info p { font-size:.81rem; color:var(--muted); }
+    .project-footer { display:flex; align-items:center; justify-content:space-between; margin-top:1rem; padding-top:.9rem; border-top:1px solid var(--border); }
+    .project-stack { display:flex; gap:.35rem; flex-wrap:wrap; }
+    .project-stack span { font-size:.67rem; color:var(--muted); background:var(--surface); border:1px solid var(--border); padding:.1rem .42rem; border-radius:.2rem; }
+    .view-btn { color:var(--accent); font-size:.8rem; font-weight:500; background:none; border:none; cursor:pointer; padding:0; }
+
+    /* MODAL */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.78); z-index:999; align-items:center; justify-content:center; padding:2rem; backdrop-filter:blur(4px); }
+    .modal-overlay.open { display:flex; animation: fadeIn .2s ease; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .modal { background:var(--surface); border:1px solid var(--border); border-radius:.6rem; max-width:680px; width:100%; max-height:90vh; overflow-y:auto; position:relative; }
+    .modal-header { padding:2rem 2rem 1.2rem; border-bottom:1px solid var(--border); }
+    .modal-cat { font-size:.7rem; color:var(--accent); text-transform:uppercase; letter-spacing:.08em; margin-bottom:.5rem; }
+    .modal-header h2 { font-family:'Playfair Display',serif; font-size:1.45rem; font-weight:600; padding-right:2rem; }
+    .modal-close { position:absolute; top:1.2rem; right:1.5rem; background:none; border:none; color:var(--muted); font-size:1.5rem; cursor:pointer; line-height:1; }
+    .modal-close:hover { color:var(--text); }
+    .modal-body { padding:1.5rem 2rem 2rem; }
+    .modal-desc { font-size:.88rem; color:var(--muted); margin-bottom:1.5rem; line-height:1.75; }
+    .modal-label { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:.7rem; }
+    .modal-tools { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1.5rem; }
+    .modal-tools span { background:var(--card); border:1px solid var(--border); color:var(--text); padding:.22rem .65rem; border-radius:.25rem; font-size:.78rem; }
+    .modal-actions { display:flex; gap:.8rem; flex-wrap:wrap; }
+    .modal-btn { display:inline-flex; align-items:center; gap:.5rem; padding:.6rem 1.2rem; border-radius:.35rem; font-size:.85rem; font-weight:500; text-decoration:none; cursor:pointer; border:none; transition:all .2s; }
+    .modal-btn-primary { background:var(--accent); color:#0d1117; }
+    .modal-btn-primary:hover { background:#56d364; }
+    .modal-btn-outline { background:transparent; color:var(--text); border:1px solid var(--border); }
+    .modal-btn-outline:hover { border-color:var(--muted); background:var(--card); }
+    .modal-placeholder { background:var(--card); border:2px dashed var(--border); border-radius:.4rem; padding:2.5rem; text-align:center; color:var(--muted); font-size:.83rem; margin-bottom:1.5rem; }
+    .modal-placeholder span { display:block; font-size:2.2rem; margin-bottom:.5rem; }
+
+    /* CONTACT */
+    #contact { background:var(--surface); border-top:1px solid var(--border); }
+    .contact-wrapper { max-width:640px; background:var(--card); border:1px solid var(--border); border-radius:.6rem; padding:3rem; }
+    .contact-wrapper > p { color:var(--muted); margin-bottom:2.5rem; }
+    .contact-links { display:flex; flex-direction:column; gap:.8rem; margin-bottom:2.5rem; }
+    .contact-link { display:flex; align-items:center; gap:1rem; padding:1rem 1.2rem; background:var(--surface); border:1px solid var(--border); border-radius:.4rem; text-decoration:none; color:var(--text); transition:border-color .2s; }
+    .contact-link:hover { border-color:var(--accent); }
+    .contact-link-icon { font-size:1.1rem; width:30px; text-align:center; }
+    .contact-link-info strong { display:block; font-size:.88rem; font-weight:500; }
+    .contact-link-info span { font-size:.78rem; color:var(--muted); }
+    .contact-form { display:flex; flex-direction:column; gap:1rem; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    input, textarea { background:var(--surface); border:1px solid var(--border); color:var(--text); padding:.75rem 1rem; border-radius:.4rem; font-family:inherit; font-size:.9rem; outline:none; transition:border-color .2s; width:100%; }
+    input:focus, textarea:focus { border-color:var(--accent); }
+    input::placeholder, textarea::placeholder { color:var(--muted); }
+    textarea { resize:vertical; min-height:120px; }
+
+    /* FOOTER */
+    footer { border-top:1px solid var(--border); padding:2.5rem 6vw; display:flex; align-items:center; justify-content:space-between; font-size:.8rem; color:var(--muted); }
+    footer a { color:var(--muted); text-decoration:none; }
+    footer a:hover { color:var(--text); }
+
+    /* REVEAL */
+    .reveal { opacity:0; transform:translateY(24px); transition:opacity .6s ease,transform .6s ease; }
+    .reveal.visible { opacity:1; transform:none; }
+
+    /* RESPONSIVE */
+    @media (max-width:900px) {
+      .about-grid, .parcours-grid { grid-template-columns:1fr; gap:3rem; }
+      .form-row { grid-template-columns:1fr; }
+      .hero-stats { gap:2rem; }
+    }
+    @media (max-width:600px) {
+      .nav-links { gap:.9rem; }
+      .nav-links a { font-size:.72rem; }
+      .cv-download { flex-direction:column; align-items:flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">Vainqueur<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#parcours">Parcours</a></li>
+    <li><a href="#skills">Compétences</a></li>
+    <li><a href="#projects">Projets</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Disponible pour missions</div>
+    <h1>HAGENIMANA <em>Vainqueur</em><br/>Cartographe · SIG · Télédétection</h1>
+    <p class="hero-sub">
+      Spécialiste en <strong>analyse spatiale avancée</strong> et télédétection satellite —
+      secteur forestier &amp; environnemental. Licence Pro Génie Informatique.
+      Basé à <strong>Brazzaville, République du Congo</strong>.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">Voir mes projets →</a>
+      <a href="#contact" class="btn btn-outline">Me contacter</a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num">3+</div><div class="stat-label">Ans d'expérience</div></div>
+      <div><div class="stat-num">4</div><div class="stat-label">Structures</div></div>
+      <div><div class="stat-num">10+</div><div class="stat-label">Logiciels SIG</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label reveal"><h2>À propos</h2><span>About me</span></div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>Cartographe et géomaticien basé à <strong>Brazzaville, République du Congo</strong>, je me spécialise dans l'analyse spatiale, la télédétection et la gestion de l'information géographique appliquées au <strong>secteur forestier et environnemental</strong>.</p>
+      <p>Titulaire d'une <strong>Licence Professionnelle en Génie Informatique</strong> (ECES, 2025), je combine expertise SIG et compétences informatiques pour automatiser des workflows géospatiaux et produire des livrables cartographiques de haute qualité.</p>
+      <p>J'ai travaillé pour des structures comme <strong>Forest Neutral Congo (FNC)</strong> et la <strong>Société des Plantations Forestières Batéké Brazzaville (SPF2B)</strong>, assurant la cartographie opérationnelle, le traitement d'images satellites et la gestion informatique.</p>
+      <p>En parallèle, je pratique la <strong>photographie (drone et appareil photo)</strong> et accompagne des organisations dans leur <strong>communication digitale</strong>.</p>
+      <div class="about-tags">
+        <span class="tag">Cartographie SIG</span><span class="tag">Télédétection</span><span class="tag">Foresterie</span>
+        <span class="tag">Drone</span><span class="tag">Photographie</span><span class="tag">Community Management</span>
+        <span class="tag">Génie Informatique</span><span class="tag">Maintenance IT</span>
+      </div>
+    </div>
+    <div class="about-tools reveal">
+      <h3>Maîtrise des outils</h3>
+      <div class="tool-list">
+        <div class="tool-item"><span class="tool-name">ArcGIS Pro / 10.x</span><div class="tool-bar"><div class="tool-fill" style="width:95%"></div></div><span class="tool-pct">95%</span></div>
+        <div class="tool-item"><span class="tool-name">QGIS</span><div class="tool-bar"><div class="tool-fill" style="width:95%"></div></div><span class="tool-pct">95%</span></div>
+        <div class="tool-item"><span class="tool-name">ENVI / SNAP / ERDAS</span><div class="tool-bar"><div class="tool-fill" style="width:88%"></div></div><span class="tool-pct">88%</span></div>
+        <div class="tool-item"><span class="tool-name">Google Earth Engine</span><div class="tool-bar"><div class="tool-fill" style="width:82%"></div></div><span class="tool-pct">82%</span></div>
+        <div class="tool-item"><span class="tool-name">Global Mapper</span><div class="tool-bar"><div class="tool-fill" style="width:85%"></div></div><span class="tool-pct">85%</span></div>
+        <div class="tool-item"><span class="tool-name">KoboToolbox / Collect</span><div class="tool-bar"><div class="tool-fill" style="width:90%"></div></div><span class="tool-pct">90%</span></div>
+        <div class="tool-item"><span class="tool-name">Pack Adobe</span><div class="tool-bar"><div class="tool-fill" style="width:85%"></div></div><span class="tool-pct">85%</span></div>
+        <div class="tool-item"><span class="tool-name">Pack CAD/CAO</span><div class="tool-bar"><div class="tool-fill" style="width:75%"></div></div><span class="tool-pct">75%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARCOURS -->
+<section id="parcours">
+  <div class="section-label reveal"><h2>Parcours</h2><span>Career & Education</span></div>
+  <div class="parcours-grid">
+
+    <!-- Expériences -->
+    <div class="reveal">
+      <div class="parcours-col-title">💼 Expériences professionnelles</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2025 – 2026</div>
+          <div class="tl-title">Responsable service Cartographie-Informatique</div>
+          <div class="tl-org">SPF2B — Brazzaville</div>
+          <div class="tl-desc">ArcGIS Pro, ENVI, SNAP, GEE, QGIS, Global Mapper, ERDAS, KoboToolbox, R, Pack Adobe, CAD/CAO.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2025 – 2026</div>
+          <div class="tl-title">Responsable Communication</div>
+          <div class="tl-org">Forest Resources Management (FRM)</div>
+          <div class="tl-desc">Stratégie communication interne/externe, création de supports visuels et rédactionnels, gestion de la présence en ligne.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2024 – 2026</div>
+          <div class="tl-title">Géomaticien – Cartographe SIG & Télédétection</div>
+          <div class="tl-org">SPF2B — Brazzaville</div>
+          <div class="tl-desc">Cartographie opérationnelle des périmètres forestiers, analyse d'images satellites, suivi de la couverture forestière, appui terrain.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2023 – 2024</div>
+          <div class="tl-title">Géomaticien – Cartographe SIG & Télédétection</div>
+          <div class="tl-org">Forest Neutral Congo (FNC)</div>
+          <div class="tl-desc">Production de cartes pour la gestion durable des forêts, traitement de données spatiales, soutien aux inventaires forestiers.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2023 – 2025</div>
+          <div class="tl-title">Informaticien – Maintenance Réseau & Périphériques</div>
+          <div class="tl-org">Forest Neutral Congo (FNC)</div>
+          <div class="tl-desc">Maintenance du parc informatique, assistance technique, gestion des réseaux et dépannage matériel.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2022</div>
+          <div class="tl-title">Assistant de Direction</div>
+          <div class="tl-org">Forest Neutral Congo (FNC)</div>
+          <div class="tl-desc">Support administratif, gestion de plannings et correspondance, coordination des réunions.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-period">2023</div>
+          <div class="tl-title">Stage SIG</div>
+          <div class="tl-org">Forest Neutral Congo — filiale FRM</div>
+          <div class="tl-desc">Mise en pratique des outils SIG dans un contexte de gestion forestière ; accompagnement de projets techniques.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formation + Certifications + CV -->
+    <div class="reveal">
+      <div class="parcours-col-title">🎓 Formation</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot gold"></div>
+          <div class="tl-period gold-text">2023 – 2025</div>
+          <div class="tl-title">Licence Professionnelle — Génie Informatique</div>
+          <div class="tl-org">ECES — Brazzaville, Congo</div>
+          <div class="tl-desc">Développement, réseaux, maintenance informatique, sécurité et systèmes embarqués. Admis session Juillet 2025.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot gold"></div>
+          <div class="tl-period gold-text">2023 – 2024</div>
+          <div class="tl-title">Formation en Télédétection appliquée à l'environnement</div>
+          <div class="tl-org">BCSTMap — Brazzaville</div>
+          <div class="tl-desc">Analyse d'images satellites, extraction d'informations spatiales, appui à la gestion environnementale. (Mai–Juin 2024)</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot gold"></div>
+          <div class="tl-period gold-text">2023</div>
+          <div class="tl-title">Formation en Cartographie SIG</div>
+          <div class="tl-org">Forest Resources Management (FRM)</div>
+          <div class="tl-desc">Maîtrise QGIS/ArcGIS, conception de cartes thématiques, structuration de bases de données spatiales.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot gold"></div>
+          <div class="tl-period gold-text">2022</div>
+          <div class="tl-title">Baccalauréat — Série D</div>
+          <div class="tl-org">Lycée de Ngo</div>
+          <div class="tl-desc">Spécialisation en sciences et mathématiques.</div>
+        </div>
+      </div>
+
+      <div class="cert-section-title">🏆 Certifications</div>
+      <div class="cert-list">
+        <div class="cert-card">
+          <div class="cert-icon">📜</div>
+          <div class="cert-info">
+            <strong>Télédétection appliquée à l'environnement</strong>
+            <span>BCSTMap · Août 2025 · N° CG-BZV-01-2024-A10-02487</span>
+          </div>
+          <span class="cert-badge">Certifié</span>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">🎓</div>
+          <div class="cert-info">
+            <strong>Attestation Licence Pro — Génie Informatique</strong>
+            <span>ECES — Brazzaville · Octobre 2025</span>
+          </div>
+          <span class="cert-badge">Validé</span>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">🌿</div>
+          <div class="cert-info">
+            <strong>Formation Cartographie SIG</strong>
+            <span>Forest Resources Management (FRM) · 2023</span>
+          </div>
+          <span class="cert-badge">Validé</span>
+        </div>
+      </div>
+
+      <div class="cv-download">
+        <div>
+          <strong>Télécharger mon CV</strong>
+          <p>CV complet en PDF — mis à jour 2025</p>
+        </div>
+        <a href="CV_Vainqueur_V2.pdf" download class="btn btn-primary" style="white-space:nowrap;font-size:.85rem;">⬇ CV PDF</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label reveal"><h2>Compétences</h2><span>Skills</span></div>
+  <div class="skills-grid">
+    <div class="skill-card reveal">
+      <div class="skill-icon">🗺️</div>
+      <h3>Cartographie & SIG</h3>
+      <p>Production de cartes thématiques, topographiques et opérationnelles. Gestion de bases de données géographiques, mise en page professionnelle.</p>
+      <div class="skill-tags"><span class="skill-tag">QGIS</span><span class="skill-tag">ArcGIS Pro</span><span class="skill-tag">Global Mapper</span><span class="skill-tag">MapInfo</span></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">🛰️</div>
+      <h3>Télédétection & Satellite</h3>
+      <p>Traitement d'images Sentinel, Landsat, SPOT. Classification, détection de changements forestiers, indices de végétation (NDVI, EVI…).</p>
+      <div class="skill-tags"><span class="skill-tag">ENVI</span><span class="skill-tag">ERDAS</span><span class="skill-tag">SNAP</span><span class="skill-tag">GEE</span></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">🌲</div>
+      <h3>SIG Forestier & Environnement</h3>
+      <p>Suivi de couverture forestière, inventaires, appui terrain, cartographie de périmètres de plantation et gestion de données de terrain.</p>
+      <div class="skill-tags"><span class="skill-tag">KoboToolbox</span><span class="skill-tag">R</span><span class="skill-tag">ArcGIS</span><span class="skill-tag">QGIS</span></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">🚁</div>
+      <h3>Drone & Photographie</h3>
+      <p>Prise de vues aériennes, orthophotographie, modélisation 3D. Photographie professionnelle avec appareil photo et drone.</p>
+      <div class="skill-tags"><span class="skill-tag">DJI</span><span class="skill-tag">Pix4D</span><span class="skill-tag">Lightroom</span><span class="skill-tag">Photoshop</span></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">💻</div>
+      <h3>Génie Informatique</h3>
+      <p>Maintenance matérielle et logicielle, administration réseau, diagnostic et réparation. Ms Office 365, Pack CAD/CAO, systèmes embarqués.</p>
+      <div class="skill-tags"><span class="skill-tag">Hardware</span><span class="skill-tag">Réseau</span><span class="skill-tag">Windows/Linux</span><span class="skill-tag">CAD/CAO</span></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">📱</div>
+      <h3>Communication & Community Mgmt</h3>
+      <p>Stratégie digitale, création de contenus visuels et rédactionnels, gestion de présence en ligne et animation de communautés.</p>
+      <div class="skill-tags"><span class="skill-tag">Facebook</span><span class="skill-tag">Instagram</span><span class="skill-tag">Canva</span><span class="skill-tag">Adobe</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label reveal"><h2>Projets</h2><span>Portfolio</span></div>
+  <p class="reveal" style="color:var(--muted);font-size:.88rem;margin-top:-2rem;margin-bottom:2.5rem;">Cliquez sur un projet pour voir les détails, images et documents.</p>
+  <div class="projects-grid">
+    <div class="project-card reveal" onclick="openModal('p1')">
+      <div class="project-thumb p-map">🗺️</div>
+      <div class="project-info">
+        <div class="project-cat">Cartographie forestière</div>
+        <h3>Carte opérationnelle — SPF2B</h3>
+        <p>Cartographie des périmètres forestiers et mise à jour des bases de données géographiques.</p>
+        <div class="project-footer"><div class="project-stack"><span>ArcGIS Pro</span><span>QGIS</span><span>KoboToolbox</span></div><button class="view-btn">Voir →</button></div>
+      </div>
+    </div>
+    <div class="project-card reveal" onclick="openModal('p2')">
+      <div class="project-thumb p-remote">🛰️</div>
+      <div class="project-info">
+        <div class="project-cat">Télédétection</div>
+        <h3>Suivi couverture forestière — FNC</h3>
+        <p>Analyse de séries temporelles satellites pour le suivi de la déforestation.</p>
+        <div class="project-footer"><div class="project-stack"><span>GEE</span><span>ENVI</span><span>Sentinel-2</span></div><button class="view-btn">Voir →</button></div>
+      </div>
+    </div>
+    <div class="project-card reveal" onclick="openModal('p3')">
+      <div class="project-thumb p-data">📊</div>
+      <div class="project-info">
+        <div class="project-cat">Analyse spatiale</div>
+        <h3>Inventaire forestier — terrain</h3>
+        <p>Collecte terrain avec KoboCollect, traitement et cartographie des inventaires forestiers.</p>
+        <div class="project-footer"><div class="project-stack"><span>KoboCollect</span><span>R</span><span>ArcGIS</span></div><button class="view-btn">Voir →</button></div>
+      </div>
+    </div>
+    <div class="project-card reveal" onclick="openModal('p4')">
+      <div class="project-thumb p-drone">🚁</div>
+      <div class="project-info">
+        <div class="project-cat">Drone & Photogrammétrie</div>
+        <h3>Levé aérien & orthophotoplan</h3>
+        <p>Prise de vues par drone pour orthophotoplan et modèle numérique de terrain.</p>
+        <div class="project-footer"><div class="project-stack"><span>DJI</span><span>Pix4D</span><span>QGIS</span></div><button class="view-btn">Voir →</button></div>
+      </div>
+    </div>
+    <div class="project-card reveal" onclick="openModal('p5')">
+      <div class="project-thumb p-urban">🏙️</div>
+      <div class="project-info">
+        <div class="project-cat">Communication & SIG</div>
+        <h3>Supports visuels & cartographiques</h3>
+        <p>Cartes thématiques et supports visuels pour la communication institutionnelle de FRM.</p>
+        <div class="project-footer"><div class="project-stack"><span>Adobe PS</span><span>QGIS</span><span>Canva</span></div><button class="view-btn">Voir →</button></div>
+      </div>
+    </div>
+    <div class="project-card reveal" onclick="openModal('p6')">
+      <div class="project-thumb p-sig">🌿</div>
+      <div class="project-info">
+        <div class="project-cat">Télédétection appliquée</div>
+        <h3>Classification d'occupation du sol</h3>
+        <p>Classification supervisée de l'occupation des terres à partir d'images satellitaires.</p>
+        <div class="project-footer"><div class="project-stack"><span>SNAP</span><span>ERDAS</span><span>ArcGIS</span></div><button class="view-btn">Voir →</button></div>
+      </div>
+    </div>
+    <div class="project-card reveal" onclick="openModal('p7')">
+      <div class="project-thumb p-photo">📸</div>
+      <div class="project-info">
+        <div class="project-cat">Photographie</div>
+        <h3>Reportage photo — Terrain forestier</h3>
+        <p>Photos documentaires lors de missions de terrain forestier, paysages du Congo.</p>
+        <div class="project-footer"><div class="project-stack"><span>DJI</span><span>Appareil photo</span><span>Lightroom</span></div><button class="view-btn">Voir →</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-p1" onclick="closeOnOverlay(event,'modal-p1')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-p1')">×</button>
+    <div class="modal-header"><div class="modal-cat">Cartographie forestière</div><h2>Carte opérationnelle — SPF2B</h2></div>
+    <div class="modal-body">
+      <div class="modal-placeholder"><span>🗺️</span>Uploadez vos images de cartes ici<br/><small style="font-size:.75rem;margin-top:.3rem;display:block">Hébergez vos images sur imgbb.com et remplacez ce bloc</small></div>
+      <p class="modal-desc">Cartographie opérationnelle des périmètres forestiers de la Société des Plantations Forestières Batéké Brazzaville. Production de cartes thématiques et mise à jour continue des bases de données géographiques pour appuyer la gestion des plantations et les décisions de terrain.</p>
+      <div class="modal-label">Outils utilisés</div>
+      <div class="modal-tools"><span>ArcGIS Pro</span><span>QGIS</span><span>KoboToolbox</span><span>Global Mapper</span></div>
+      <div class="modal-actions">
+        <a href="#" class="modal-btn modal-btn-primary">🔗 Voir sur GitHub</a>
+        <a href="#" class="modal-btn modal-btn-outline">📄 Rapport PDF</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-p2" onclick="closeOnOverlay(event,'modal-p2')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-p2')">×</button>
+    <div class="modal-header"><div class="modal-cat">Télédétection</div><h2>Suivi couverture forestière — FNC</h2></div>
+    <div class="modal-body">
+      <div class="modal-placeholder"><span>🛰️</span>Ajoutez vos cartes de résultats ici</div>
+      <p class="modal-desc">Analyse de séries temporelles d'images Sentinel-2 et Landsat pour le suivi de l'évolution de la couverture forestière en République du Congo. Détection de changements, calcul d'indices NDVI et production de cartes de déforestation pour Forest Neutral Congo.</p>
+      <div class="modal-label">Outils utilisés</div>
+      <div class="modal-tools"><span>Google Earth Engine</span><span>ENVI</span><span>SNAP</span><span>Sentinel-2</span><span>Landsat</span></div>
+      <div class="modal-actions">
+        <a href="#" class="modal-btn modal-btn-primary">🔗 Voir sur GitHub</a>
+        <a href="#" class="modal-btn modal-btn-outline">📄 Rapport PDF</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-p3" onclick="closeOnOverlay(event,'modal-p3')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-p3')">×</button>
+    <div class="modal-header"><div class="modal-cat">Analyse spatiale</div><h2>Inventaire forestier — terrain</h2></div>
+    <div class="modal-body">
+      <div class="modal-placeholder"><span>📊</span>Ajoutez vos cartes et graphiques ici</div>
+      <p class="modal-desc">Collecte de données de terrain avec KoboCollect lors d'inventaires forestiers. Traitement statistique sous R, géoréférencement et cartographie des résultats pour appuyer la gestion durable des forêts de Forest Neutral Congo.</p>
+      <div class="modal-label">Outils utilisés</div>
+      <div class="modal-tools"><span>KoboCollect</span><span>KoboToolbox</span><span>R</span><span>ArcGIS</span><span>QGIS</span></div>
+      <div class="modal-actions">
+        <a href="#" class="modal-btn modal-btn-primary">🔗 Voir sur GitHub</a>
+        <a href="#" class="modal-btn modal-btn-outline">📄 Rapport PDF</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-p4" onclick="closeOnOverlay(event,'modal-p4')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-p4')">×</button>
+    <div class="modal-header"><div class="modal-cat">Drone & Photogrammétrie</div><h2>Levé aérien & orthophotoplan</h2></div>
+    <div class="modal-body">
+      <div class="modal-placeholder"><span>🚁</span>Ajoutez vos photos aériennes et orthophotos ici</div>
+      <p class="modal-desc">Réalisation de levés aériens par drone pour la production d'orthophotoplans et de modèles numériques de terrain (MNT) à haute résolution. Les données servent à la mise à jour cartographique et à l'aménagement des zones forestières.</p>
+      <div class="modal-label">Outils utilisés</div>
+      <div class="modal-tools"><span>DJI</span><span>Pix4D</span><span>Agisoft Metashape</span><span>QGIS</span></div>
+      <div class="modal-actions">
+        <a href="#" class="modal-btn modal-btn-primary">🔗 Voir sur GitHub</a>
+        <a href="#" class="modal-btn modal-btn-outline">📄 Rapport PDF</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-p5" onclick="closeOnOverlay(event,'modal-p5')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-p5')">×</button>
+    <div class="modal-header"><div class="modal-cat">Communication & SIG</div><h2>Supports visuels & cartographiques</h2></div>
+    <div class="modal-body">
+      <div class="modal-placeholder"><span>🏙️</span>Ajoutez vos affiches et créations ici</div>
+      <p class="modal-desc">Conception de supports visuels et cartes thématiques dans le cadre de la communication institutionnelle de Forest Resources Management. Affiches, infographies, rapports illustrés et contenus digitaux pour les réseaux sociaux.</p>
+      <div class="modal-label">Outils utilisés</div>
+      <div class="modal-tools"><span>Adobe Photoshop</span><span>Illustrator</span><span>QGIS</span><span>Canva</span><span>Ms Office 365</span></div>
+      <div class="modal-actions">
+        <a href="#" class="modal-btn modal-btn-primary">🔗 Voir en ligne</a>
+        <a href="#" class="modal-btn modal-btn-outline">📄 Voir PDF</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-p6" onclick="closeOnOverlay(event,'modal-p6')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-p6')">×</button>
+    <div class="modal-header"><div class="modal-cat">Télédétection appliquée</div><h2>Classification d'occupation du sol</h2></div>
+    <div class="modal-body">
+      <div class="modal-placeholder"><span>🌿</span>Ajoutez vos cartes de classification ici</div>
+      <p class="modal-desc">Classification supervisée et non-supervisée de l'occupation et de l'utilisation des terres à partir d'images satellitaires multi-temporelles. Production de cartes d'occupation du sol pour la planification environnementale en milieu tropical congolais.</p>
+      <div class="modal-label">Outils utilisés</div>
+      <div class="modal-tools"><span>SNAP</span><span>ERDAS</span><span>ENVI</span><span>ArcGIS</span><span>Sentinel-2</span></div>
+      <div class="modal-actions">
+        <a href="#" class="modal-btn modal-btn-primary">🔗 Voir sur GitHub</a>
+        <a href="#" class="modal-btn modal-btn-outline">📄 Rapport PDF</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-p7" onclick="closeOnOverlay(event,'modal-p7')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-p7')">×</button>
+    <div class="modal-header"><div class="modal-cat">Photographie</div><h2>Reportage photo — Terrain forestier</h2></div>
+    <div class="modal-body">
+      <div class="modal-placeholder"><span>📸</span>Ajoutez vos photos de terrain ici</div>
+      <p class="modal-desc">Série de photographies documentaires et artistiques réalisées lors de missions de terrain en milieu forestier congolais. Captation de paysages naturels, de la biodiversité et des activités de terrain depuis le sol et en vue aérienne par drone.</p>
+      <div class="modal-label">Équipement</div>
+      <div class="modal-tools"><span>Drone DJI</span><span>Appareil photo</span><span>Adobe Lightroom</span><span>Photoshop</span></div>
+      <div class="modal-actions">
+        <a href="#" class="modal-btn modal-btn-primary">🔗 Galerie en ligne</a>
+        <a href="#" class="modal-btn modal-btn-outline">📥 Télécharger</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label reveal"><h2>Contact</h2><span>Get in touch</span></div>
+  <div class="contact-wrapper reveal">
+    <p>Vous avez un projet cartographique, SIG, de télédétection ou de communication ? N'hésitez pas à me contacter.</p>
+    <div class="contact-links">
+      <a href="mailto:vainqueurhageni@mail.com" class="contact-link">
+        <span class="contact-link-icon">✉️</span>
+        <div class="contact-link-info"><strong>Email principal</strong><span>vainqueurhageni@mail.com</span></div>
+      </a>
+      <a href="mailto:hagenifrm@mail.com" class="contact-link">
+        <span class="contact-link-icon">📧</span>
+        <div class="contact-link-info"><strong>Email professionnel</strong><span>hagenifrm@mail.com</span></div>
+      </a>
+      <a href="tel:+242061889777" class="contact-link">
+        <span class="contact-link-icon">📞</span>
+        <div class="contact-link-info"><strong>Téléphone</strong><span>+242 06 188 97 77</span></div>
+      </a>
+      <a href="https://github.com/votre-username" target="_blank" class="contact-link">
+        <span class="contact-link-icon">🐙</span>
+        <div class="contact-link-info"><strong>GitHub</strong><span>github.com/votre-username — à remplacer</span></div>
+      </a>
+    </div>
+    <form class="contact-form" onsubmit="return false;">
+      <div class="form-row">
+        <input type="text" placeholder="Votre nom"/>
+        <input type="email" placeholder="Votre email"/>
+      </div>
+      <input type="text" placeholder="Sujet"/>
+      <textarea placeholder="Votre message..."></textarea>
+      <button type="submit" class="btn btn-primary" style="align-self:flex-start">Envoyer →</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 · HAGENIMANA Vainqueur — Brazzaville, Congo</span>
+  <span>Hébergé sur <a href="https://pages.github.com" target="_blank">GitHub Pages</a></span>
+</footer>
+
+<script>
+  function openModal(id) {
+    document.getElementById('modal-' + id).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeOnOverlay(e, id) {
+    if (e.target === document.getElementById(id)) closeModal(id);
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(m => {
+        m.classList.remove('open'); document.body.style.overflow = '';
+      });
+    }
+  });
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('visible'), i * 80); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+    navLinks.forEach(a => { a.style.color = a.getAttribute('href') === '#' + current ? 'var(--text)' : ''; });
+  });
+</script>
+</body>
+</html>
